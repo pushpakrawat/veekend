@@ -6,18 +6,27 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import VenueDetails from "@/pages/venue-details";
 import NotFound from "@/pages/not-found";
+import { useAuthStore } from "@/store/auth-store";
+import { useEffect } from "react";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/venue/:venueId" component={VenueDetails} />
+      <Route path="/venue/:id" component={VenueDetails} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
+  const { initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    const unsubscribe = initializeAuth();
+    return unsubscribe;
+  }, [initializeAuth]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

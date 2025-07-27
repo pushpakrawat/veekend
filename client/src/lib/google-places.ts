@@ -283,6 +283,10 @@ export class GooglePlacesService {
   }
 
   getPhotoUrl(photoReference: string, maxWidth: number = 400): string {
+    if (!GOOGLE_MAPS_API_KEY) {
+      console.warn('Google Maps API key not found');
+      return `https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=${maxWidth}&h=${Math.floor(maxWidth * 0.6)}&fit=crop`;
+    }
     return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${photoReference}&key=${GOOGLE_MAPS_API_KEY}`;
   }
 }

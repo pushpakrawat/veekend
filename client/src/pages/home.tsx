@@ -4,7 +4,7 @@ import LocationSearch from "@/components/location-search";
 import FilterPanel from "@/components/filter-panel";
 import VenueGrid from "@/components/venue-grid";
 import LoadingOverlay from "@/components/loading-overlay";
-import VenueDetailModal from "@/components/venue-detail-modal";
+import Footer from "@/components/footer";
 import { useVenueStore } from "@/store/venue-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useToast } from "@/hooks/use-toast";
@@ -88,7 +88,8 @@ export default function Home() {
 
       {/* Modals and Overlays */}
       <LoadingOverlay />
-      <VenueDetailModal />
+      
+      <Footer />
     </div>
   );
 }

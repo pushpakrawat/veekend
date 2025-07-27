@@ -1,5 +1,16 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult, signOut, onAuthStateChanged, User } from "firebase/auth";
+import { 
+  getAuth, 
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider, 
+  signOut, 
+  onAuthStateChanged, 
+  User,
+  AuthError
+} from "firebase/auth";
 
 import { env } from "./env";
 
@@ -21,11 +32,17 @@ provider.addScope('email');
 provider.addScope('profile');
 
 export const signInWithGoogle = () => {
-  return signInWithRedirect(auth, provider);
+  return signInWithPopup(auth, provider);
 };
 
-export const handleRedirectResult = () => {
-  return getRedirectResult(auth);
+export const signInWithEmail = (email: string, password: string) => {
+  return signInWithEmailAndPassword(auth, email, password);
+};
+
+export const signUpWithEmail = async (email: string, password: string, displayName: string) => {
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(result.user, { displayName });
+  return result;
 };
 
 export const signOutUser = () => {

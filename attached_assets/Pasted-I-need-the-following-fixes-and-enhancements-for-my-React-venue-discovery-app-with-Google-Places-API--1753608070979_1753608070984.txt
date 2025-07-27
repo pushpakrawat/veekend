@@ -1,0 +1,49 @@
+I need the following fixes and enhancements for my React venue discovery app with Google Places API and Firebase Authentication:
+
+Authentication:
+
+Fix the Google Sign-In flow as it is not currently working.
+
+Add manual sign-up/sign-in options allowing users to register and log in with email and password (with proper validation and error handling).
+
+Ensure a smooth authentication UX that integrates both Google sign-in and manual login seamlessly.
+
+Search & Filters:
+
+The search, location detection, and filters (categories, distance slider, rating, price) are working well — no changes needed.
+
+Add a clearly visible “Show All” button that loads or paginates to display all available venues matching the search and filter criteria.
+
+Venue Images:
+
+Currently, venue images are not appearing.
+
+Fix the app so that venue photos (main images) are fetched properly from the Google Places API and displayed with required attribution.
+
+Make sure that images load efficiently and degrade gracefully if no image is available.
+
+Venue Details Navigation:
+
+When a user clicks on a venue card, it correctly opens a dedicated detail page (not a modal).
+
+Remove any modal behavior so that the venue details only open in a separate page.
+
+Fix the issue where pressing the browser’s back button shows both the detail page and the modal together—only the detail page view or the list view should appear, never both simultaneously.
+
+Footer:
+
+Add a responsive, stylish, and simple footer to all pages.
+
+The footer should include the app name, a brief description or tagline, and copyright information.
+
+Ensure the footer fits well in mobile and desktop views without interfering with the main content.
+
+General:
+
+Maintain the current design, responsive layout, and state management (Zustand).
+
+Include any necessary user feedback (e.g., loading indicators for images, error messages for auth).
+
+Keep the app SEO-friendly and accessible.
+
+Please confirm and ask if you need any API keys, Firebase/Auth config details, or design preferences before starting.

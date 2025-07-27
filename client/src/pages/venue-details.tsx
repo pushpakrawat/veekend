@@ -1,194 +1,278 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useLocation } from "wouter";
-import Header from "@/components/header";
-import LoadingOverlay from "@/components/loading-overlay";
-import { useVenueStore } from "@/store/venue-store";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { useVenueStore } from "@/store/venue-store";
+import { useAuthStore } from "@/store/auth-store";
 import { googlePlacesService } from "@/lib/google-places";
+import { useToast } from "@/hooks/use-toast";
+import { GooglePlace } from "@/types/venue";
+import LoadingOverlay from "@/components/loading-overlay";
+import Footer from "@/components/footer";
 
 export default function VenueDetails() {
-  const { venueId } = useParams<{ venueId: string }>();
+  const { id } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
-  const { currentVenue, isLoading, getVenueDetails } = useVenueStore();
+  const [venue, setVenue] = useState<GooglePlace | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { currentVenue } = useVenueStore();
+  const { user } = useAuthStore();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (venueId) {
-      getVenueDetails(venueId);
+    const loadVenueDetails = async () => {
+      if (!id) {
+        setLocation("/");
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        // Check if we already have venue data in store
+        if (currentVenue && currentVenue.place_id === id) {
+          setVenue(currentVenue);
+        } else {
+          // Fetch detailed venue data
+          const venueDetails = await googlePlacesService.getPlaceDetails(id);
+          setVenue(venueDetails);
+        }
+      } catch (error) {
+        console.error("Failed to load venue details:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load venue details. Please try again.",
+          variant: "destructive",
+        });
+        setLocation("/");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVenueDetails();
+  }, [id, currentVenue, setLocation, toast]);
+
+  const handleBack = () => {
+    setLocation("/");
+  };
+
+  const handleWishlistToggle = () => {
+    if (!user) {
+      toast({
+        title: "Sign In Required",
+        description: "Please sign in to save venues to your wishlist.",
+        variant: "destructive",
+      });
+      return;
     }
-  }, [venueId, getVenueDetails]);
+
+    setIsWishlisted(!isWishlisted);
+    toast({
+      title: isWishlisted ? "Removed from Wishlist" : "Added to Wishlist",
+      description: `${venue?.name} has been ${isWishlisted ? 'removed from' : 'added to'} your wishlist.`,
+    });
+  };
+
+  const getPhotoUrl = (photoReference: string, maxWidth: number = 800) => {
+    return googlePlacesService.getPhotoUrl(photoReference, maxWidth);
+  };
 
   if (isLoading) {
     return <LoadingOverlay />;
   }
 
-  if (!currentVenue) {
+  if (!venue) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <h1 className="text-2xl font-bold text-foreground mb-4">Venue Not Found</h1>
-              <p className="text-muted-foreground mb-6">
-                The venue you're looking for could not be found.
-              </p>
-              <Button onClick={() => setLocation("/")}>
-                <i className="fas fa-arrow-left mr-2"></i>
-                Back to Search
-              </Button>
-            </CardContent>
-          </Card>
-        </main>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Venue Not Found</h2>
+          <Button onClick={handleBack}>Back to Search</Button>
+        </div>
       </div>
     );
   }
 
-  const venue = currentVenue;
   const mainPhoto = venue.photos?.[0];
   const photoUrl = mainPhoto 
-    ? googlePlacesService.getPhotoUrl(mainPhoto.photo_reference, 800)
-    : "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=400&fit=crop";
+    ? getPhotoUrl(mainPhoto.photo_reference, 1200)
+    : "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200&h=600&fit=crop";
+
+  const formatHours = (hours: any) => {
+    if (!hours?.weekday_text) return null;
+    return hours.weekday_text.map((day: string, index: number) => (
+      <div key={index} className="text-sm text-muted-foreground">
+        {day}
+      </div>
+    ));
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={i} className="fas fa-star text-yellow-400"></i>);
+    }
+
+    if (hasHalfStar) {
+      stars.push(<i key="half" className="fas fa-star-half-alt text-yellow-400"></i>);
+    }
+
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<i key={`empty-${i}`} className="far fa-star text-yellow-400"></i>);
+    }
+
+    return stars;
+  };
+
+  const getPriceLevelText = (level: number) => {
+    const levels = ['Free', 'Inexpensive', 'Moderate', 'Expensive', 'Very Expensive'];
+    return levels[level] || 'Unknown';
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <Button 
-          variant="ghost" 
-          onClick={() => setLocation("/")}
-          className="mb-6"
+      {/* Hero Section */}
+      <div className="relative h-64 md:h-96">
+        <img 
+          src={photoUrl}
+          alt={venue.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200&h=600&fit=crop";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        
+        {/* Back Button */}
+        <Button
+          onClick={handleBack}
+          variant="secondary"
+          size="sm"
+          className="absolute top-4 left-4 z-10"
         >
           <i className="fas fa-arrow-left mr-2"></i>
-          Back to Search
+          Back
         </Button>
 
-        <div className="bg-card rounded-xl overflow-hidden border border-border">
-          {/* Hero Image */}
-          <div className="relative h-64 md:h-80">
-            <img 
-              src={photoUrl}
-              alt={venue.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-4 right-4">
-              <Button variant="secondary" size="sm">
-                <i className="far fa-heart mr-2"></i>
-                Save
-              </Button>
-            </div>
+        {/* Wishlist Button */}
+        <Button
+          onClick={handleWishlistToggle}
+          variant="secondary"
+          size="sm"
+          className="absolute top-4 right-4 z-10"
+        >
+          <i className={`${isWishlisted ? 'fas' : 'far'} fa-heart mr-2 ${isWishlisted ? 'text-red-500' : ''}`}></i>
+          {isWishlisted ? 'Saved' : 'Save'}
+        </Button>
+
+        {/* Venue Name Overlay */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+            {venue.name}
+          </h1>
+          <div className="flex items-center space-x-4 text-white/90">
+            {venue.rating && (
+              <div className="flex items-center space-x-1">
+                <div className="flex space-x-1">
+                  {renderStars(venue.rating)}
+                </div>
+                <span className="ml-2 font-medium">{venue.rating}</span>
+                {venue.user_ratings_total && (
+                  <span className="text-sm">({venue.user_ratings_total.toLocaleString()} reviews)</span>
+                )}
+              </div>
+            )}
+            
+            {venue.price_level !== undefined && (
+              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                {getPriceLevelText(venue.price_level)}
+              </Badge>
+            )}
           </div>
+        </div>
+      </div>
 
-          {/* Venue Details */}
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">{venue.name}</h1>
-                <div className="flex items-center space-x-4 text-sm">
-                  {venue.rating && (
-                    <div className="flex items-center text-yellow-400">
-                      <i className="fas fa-star mr-1"></i>
-                      <span>{venue.rating}</span>
-                      {venue.user_ratings_total && (
-                        <span className="text-muted-foreground ml-1">
-                          ({venue.user_ratings_total} reviews)
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {venue.price_level && (
-                    <div className="text-muted-foreground">
-                      {'$'.repeat(venue.price_level)} • {venue.types[0]?.replace(/_/g, ' ')}
-                    </div>
-                  )}
-                  {venue.opening_hours?.open_now && (
-                    <div className="text-green-400 font-medium">Open Now</div>
-                  )}
+      {/* Content Section */}
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Info */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Address & Contact */}
+            <div>
+              <h3 className="text-xl font-semibold text-foreground mb-3">Location & Contact</h3>
+              <div className="space-y-2">
+                <div className="flex items-start space-x-2">
+                  <i className="fas fa-map-marker-alt text-primary mt-1"></i>
+                  <span className="text-muted-foreground">{venue.formatted_address}</span>
                 </div>
+                
+                {venue.formatted_phone_number && (
+                  <div className="flex items-center space-x-2">
+                    <i className="fas fa-phone text-primary"></i>
+                    <a 
+                      href={`tel:${venue.formatted_phone_number}`}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {venue.formatted_phone_number}
+                    </a>
+                  </div>
+                )}
+                
+                {venue.website && (
+                  <div className="flex items-center space-x-2">
+                    <i className="fas fa-globe text-primary"></i>
+                    <a 
+                      href={venue.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      Visit Website
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Contact & Location Info */}
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <Separator />
+
+            {/* Categories */}
+            {venue.types && venue.types.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">Contact & Location</h3>
-                <div className="space-y-3 text-muted-foreground">
-                  <div className="flex items-start">
-                    <i className="fas fa-map-marker-alt w-5 text-muted-foreground mt-0.5 mr-3"></i>
-                    <span>{venue.formatted_address}</span>
-                  </div>
-                  {venue.formatted_phone_number && (
-                    <div className="flex items-center">
-                      <i className="fas fa-phone w-5 text-muted-foreground mr-3"></i>
-                      <span>{venue.formatted_phone_number}</span>
-                    </div>
-                  )}
-                  {venue.website && (
-                    <div className="flex items-center">
-                      <i className="fas fa-globe w-5 text-muted-foreground mr-3"></i>
-                      <a 
-                        href={venue.website} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        Visit Website
-                      </a>
-                    </div>
-                  )}
+                <h3 className="text-xl font-semibold text-foreground mb-3">Categories</h3>
+                <div className="flex flex-wrap gap-2">
+                  {venue.types.slice(0, 8).map((type, index) => (
+                    <Badge key={index} variant="outline" className="capitalize">
+                      {type.replace(/_/g, ' ')}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-
-              {venue.opening_hours?.weekday_text && (
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">Opening Hours</h3>
-                  <div className="space-y-1 text-muted-foreground text-sm">
-                    {venue.opening_hours.weekday_text.map((day, index) => {
-                      const [dayName, hours] = day.split(': ');
-                      const isToday = new Date().getDay() === (index + 1) % 7;
-                      
-                      return (
-                        <div 
-                          key={index}
-                          className={`flex justify-between ${isToday ? 'font-medium text-foreground' : ''}`}
-                        >
-                          <span>{dayName}</span>
-                          <span>{hours}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
 
             {/* Reviews */}
             {venue.reviews && venue.reviews.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-4">Recent Reviews</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3">Recent Reviews</h3>
                 <div className="space-y-4">
                   {venue.reviews.slice(0, 3).map((review, index) => (
-                    <div key={index} className="bg-muted/10 rounded-lg p-4">
+                    <div key={index} className="bg-card p-4 rounded-lg border">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
-                            {review.author_name.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground">{review.author_name}</p>
-                            <p className="text-xs text-muted-foreground">{review.relative_time_description}</p>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium text-foreground">{review.author_name}</span>
+                          <div className="flex space-x-1">
+                            {renderStars(review.rating)}
                           </div>
                         </div>
-                        <div className="flex items-center text-yellow-400">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <i 
-                              key={i}
-                              className={`fas fa-star text-xs ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                            ></i>
-                          ))}
-                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {new Date(review.time * 1000).toLocaleDateString()}
+                        </span>
                       </div>
                       <p className="text-muted-foreground text-sm">{review.text}</p>
                     </div>
@@ -197,8 +281,55 @@ export default function VenueDetails() {
               </div>
             )}
           </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Opening Hours */}
+            {venue.opening_hours && (
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-3">Opening Hours</h3>
+                <div className="bg-card p-4 rounded-lg border">
+                  <div className="space-y-1">
+                    {formatHours(venue.opening_hours)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Photo Gallery */}
+            {venue.photos && venue.photos.length > 1 && (
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-3">Photos</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {venue.photos.slice(1, 5).map((photo, index) => (
+                    <img
+                      key={index}
+                      src={getPhotoUrl(photo.photo_reference, 400)}
+                      alt={`${venue.name} photo ${index + 2}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=200&fit=crop";
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </main>
+      </div>
+
+      {/* Photo Attribution */}
+      {mainPhoto && (
+        <div className="container mx-auto px-4 pb-4">
+          <p className="text-xs text-muted-foreground text-center">
+            Photos by Google Places API. Content may be subject to copyright.
+          </p>
+        </div>
+      )}
+      
+      <Footer />
     </div>
   );
 }

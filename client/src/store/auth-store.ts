@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User } from 'firebase/auth';
-import { signInWithGoogle, signOutUser, onAuthStateChange, handleRedirectResult } from '@/lib/firebase';
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, signOutUser, onAuthStateChange } from '@/lib/firebase';
 
 interface AuthStore {
   user: User | null;
@@ -9,7 +9,9 @@ interface AuthStore {
   isInitialized: boolean;
 
   // Actions
-  signIn: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
   initializeAuth: () => void;
   clearError: () => void;
@@ -21,14 +23,43 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   error: null,
   isInitialized: false,
 
-  signIn: async () => {
+  signInWithGoogle: async () => {
     set({ isLoading: true, error: null });
     try {
       await signInWithGoogle();
+      set({ isLoading: false });
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Google sign in error:', error);
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to sign in',
+        error: error instanceof Error ? error.message : 'Failed to sign in with Google',
+        isLoading: false 
+      });
+    }
+  },
+
+  signInWithEmail: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      await signInWithEmail(email, password);
+      set({ isLoading: false });
+    } catch (error) {
+      console.error('Email sign in error:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to sign in with email',
+        isLoading: false 
+      });
+    }
+  },
+
+  signUpWithEmail: async (email: string, password: string, displayName: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      await signUpWithEmail(email, password, displayName);
+      set({ isLoading: false });
+    } catch (error) {
+      console.error('Email sign up error:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to sign up with email',
         isLoading: false 
       });
     }
@@ -49,16 +80,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   initializeAuth: () => {
-    // Handle redirect result on app startup
-    handleRedirectResult().then((result) => {
-      if (result?.user) {
-        set({ user: result.user, isLoading: false });
-      }
-    }).catch((error) => {
-      console.error('Redirect result error:', error);
-      set({ error: error.message, isLoading: false });
-    });
-
+    set({ isLoading: true });
+    
     // Listen to auth state changes
     const unsubscribe = onAuthStateChange((user) => {
       set({ 
