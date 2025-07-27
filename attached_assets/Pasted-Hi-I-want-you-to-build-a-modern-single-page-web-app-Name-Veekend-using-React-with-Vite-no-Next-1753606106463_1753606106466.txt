@@ -1,0 +1,126 @@
+Hi! I want you to build a modern, single-page web app Name : Veekend, using React with Vite (no Next.js) and Zustand for state management. The key feature is that the app fetches live, real-time data from the Google Maps/Places API every time the user performs a search—no caching or pre-stored data. Data should always reflect the freshest possible venue info directly from Google.
+
+Major Requirements (in order of priority):
+1. Real-Time Google Places Data Fetching
+When a user enters a location (city, state, country) or shares their current location, the app queries Google Places API in real time, fetching venues nearby at the moment of search.
+
+Results reflect actual nearby places, updated dynamically for every new search or filter change.
+
+Use Google Places Nearby Search or Text Search for venue discovery.
+
+For each selected venue, fetch extended details (photos, reviews, opening hours, contact info) on-demand when the user clicks a venue card.
+
+2. Location Input & Detection
+Provide a single smart input field accepting city, state, country (e.g., “Gurgaon, Haryana, India”), with Google Places Autocomplete suggestion support.
+
+Add a “Share My Location” button that detects and fills location automatically via browser geolocation.
+
+Use the user’s location (if shared) to enhance searches and distance calculation.
+
+3. Venue List & Filtering UI
+Display venues as responsive cards/grid.
+
+Each card must show:
+
+Venue image (main photo) with Google attribution.
+
+Name
+
+Distance from user (if location shared).
+
+Shortened address/area (like sector/locality, tailored per city inputs).
+
+Brief location details from Google.
+
+Opening hours status (open now, closing time, etc.).
+
+Star rating and review count.
+
+Allow users to filter results by:
+
+Categories: dining, entertainment, amusement, games & sports, relaxation & devotion, adventure, etc.
+
+Distance: with a slider selecting radius (e.g., 1km to 20km).
+
+Rating: minimum star rating filter.
+
+Price level: toggle price categories ($, $$, $$$, $$$$).
+
+Filters should update results dynamically by triggering new, live API queries with the selected parameters.
+
+4. Venue Details Page
+When a venue card is clicked, open a detail page (preferred) or modal that fetches and displays all possible live Google Places info:
+
+High-resolution photo gallery with attributions.
+
+Full address, plus map link and directions.
+
+Complete opening hours by day.
+
+Business status (open, closed, temporarily closed).
+
+Full category list.
+
+Detailed reviews (with reviewer names, stars, dates, detailed text).
+
+Contact info and website.
+
+Price level, reservation links, accessibility info, plus code, and any other available data.
+
+5. Authentication and Wishlist
+Users can optionally sign up/sign in via Google Sign-In using Firebase Authentication.
+
+Browsing and searching does not require sign-in.
+
+Trying to save a venue in a wishlist prompts sign-in if the user is not authenticated.
+
+Wishlist is stored in Firebase for signed-in users.
+
+Provide UI for wishlist management.
+
+6. UX and UI Details
+UI must be modern, clean, fully responsive, and accessible.
+
+Loading indicators when fetching data.
+
+Friendly error messages for quota limits, invalid searches, etc.
+
+A simple but elegant footer with app info and credits.
+
+SEO-friendly (with proper meta tags and schema on relevant pages).
+
+7. Technical Requirements
+Pure client-side React SPA using Vite as the build tool.
+
+Zustand for state management.
+
+Google Places API calls are done directly from the browser; no backend or proxy server.
+
+Document how to add your Google Maps API key and Firebase config using environment variables.
+
+Provide instructions for running locally, building, and deploying to Firebase Hosting or any static host.
+
+Before Finalizing
+Please pause and ask for:
+
+Google Maps API key,
+
+Firebase Authentication config (Firebase project keys and Google OAuth Client ID),
+
+Any customization preferences for categories, filters, or UI.
+
+These are the credentials you will need: 
+Google Maps API : 
+"AIzaSyBrlxE2eVR2VOj5JprdAvONqjigl2g392s"
+
+Firebase credentials below
+  apiKey: "AIzaSyDKl5EkC8vWOsRYknn5zUQ0TjS8_w3M1HQ",
+  authDomain: "weekend-fe673.firebaseapp.com",
+  projectId: "weekend-fe673",
+  storageBucket: "weekend-fe673.firebasestorage.app",
+  messagingSenderId: "579982141783",
+  appId: "1:579982141783:web:dd16aba052b18b515e7612",
+  measurementId: "G-9528LV82H2"
+
+Google client id: 579982141783-r9kjgbegka1f4nc130d2cd58tkf3dco5.apps.googleusercontent.com
+
