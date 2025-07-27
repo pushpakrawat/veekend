@@ -24,6 +24,9 @@ export default function VenueCard({ venue, viewMode = 'grid' }: VenueCardProps) 
     ? googlePlacesService.getPhotoUrl(mainPhoto.photo_reference, 400)
     : "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=250&fit=crop";
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const handleCardClick = () => {
     setCurrentVenue(venue);
     setLocation(`/venue/${venue.place_id}`);
@@ -79,12 +82,35 @@ export default function VenueCard({ venue, viewMode = 'grid' }: VenueCardProps) 
       onClick={handleCardClick}
     >
       <div className="relative">
+        {!imageLoaded && !imageError && (
+          <div className="w-full h-48 bg-muted animate-pulse flex items-center justify-center">
+            <i className="fas fa-image text-muted-foreground text-2xl"></i>
+          </div>
+        )}
+        
         <img 
           src={photoUrl}
           alt={venue.name}
-          className="w-full h-48 object-cover"
+          className={`w-full h-48 object-cover transition-opacity duration-300 ${
+            imageLoaded ? 'opacity-100' : 'opacity-0'
+          } ${imageError ? 'hidden' : ''}`}
           loading="lazy"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => {
+            setImageError(true);
+            setImageLoaded(true);
+          }}
         />
+        
+        {imageError && (
+          <div className="w-full h-48 bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <i className="fas fa-image text-muted-foreground text-2xl mb-2"></i>
+              <p className="text-sm text-muted-foreground">No image available</p>
+            </div>
+          </div>
+        )}
+        
         <Button
           variant="ghost"
           size="sm"
@@ -93,6 +119,13 @@ export default function VenueCard({ venue, viewMode = 'grid' }: VenueCardProps) 
         >
           <i className={isWishlisted ? "fas fa-heart text-red-400" : "far fa-heart"}></i>
         </Button>
+        
+        {/* Google Attribution for photos */}
+        {mainPhoto && imageLoaded && !imageError && (
+          <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1 py-0.5 rounded">
+            Google
+          </div>
+        )}
       </div>
 
       <div className="p-4">

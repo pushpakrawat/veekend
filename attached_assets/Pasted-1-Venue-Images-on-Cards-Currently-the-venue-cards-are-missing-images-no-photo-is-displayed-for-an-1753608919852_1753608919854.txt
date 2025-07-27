@@ -1,0 +1,40 @@
+1. Venue Images on Cards
+Currently, the venue cards are missing images—no photo is displayed for any listed place.
+
+Please update the app so that each venue card reliably fetches and displays the main photo/image for the venue using the Google Places API (“photos” array from Places API).
+
+If a photo is not available for a venue, show a clean fallback or placeholder image instead.
+
+All displayed images must include the required Google attribution as per API guidelines.
+
+Ensure images load quickly and do not break the card layout, even on slow networks.
+
+2. Complete Venue Details Page
+When a user clicks on a venue card, a dedicated venue detail page opens (not a modal). However, this page does not currently show all the available details about the venue fetched from the Google Places API.
+
+Please enhance the venue details page to show:
+
+Gallery or large view of all available photos (with attributions).
+
+Full venue name and precise address.
+
+Opening hours for each day and live open/close status.
+
+Star rating, total number of ratings, and full list of recent reviews (with reviewer, rating, text, date).
+
+Categories/types, price level, phone number, website, Google Maps link, plus code, business status (operational, temporarily closed, etc.).
+
+Any other relevant detail (reservation link, accessibility info, etc.).
+
+Make sure all venue data is fetched on-demand in real time from the Google Places API when a detail page is opened, and the UI shows loading states as data loads.
+
+3. Maintain Good UX and Existing Features
+Keep all other current features as they are—search, filters, login/wishlist, etc. If you can, make the categories horizontal instead of vertical.
+
+Ensure the venue cards and detail page remain responsive, visually appealing, and accessible.
+
+Provide clear error messages if no image or additional venue info is available.
+
+Before starting, please confirm if you need any more API keys, Firebase/Auth credentials, or specific format preferences for the detail page or image display.
+
+This prompt puts the focus on making venue images and details display correctly and richly, while keeping your app fast and user-friendly.
