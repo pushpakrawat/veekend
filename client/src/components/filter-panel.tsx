@@ -57,7 +57,7 @@ export default function FilterPanel() {
         {/* Categories */}
         <div className="flex-1">
           <label className="block text-sm font-medium text-foreground mb-3">Categories</label>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-row justify-between gap-2">
             {CATEGORIES.map((category) => (
               <Button
                 key={category.id}
