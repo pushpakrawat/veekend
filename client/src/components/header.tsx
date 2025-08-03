@@ -11,7 +11,7 @@ export default function Header() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <i className="fas fa-map-marker-alt text-primary-foreground text-sm"></i>
             </div>
-            <h1 className="text-xl font-bold text-foreground">Veekend</h1>
+            <h1 className="text-xl font-bold text-foreground">Veek</h1>
           </div>
 
           {/* Auth Section */}
