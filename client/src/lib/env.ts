@@ -1,6 +1,6 @@
 // Environment variables for the client
 export const env = {
-  GOOGLE_MAPS_API_KEY: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyAdY-77pc_1gkAIKymgJuYpwm8V1qUSRvw",
+  GOOGLE_MAPS_API_KEY: "AIzaSyAdY-77pc_1gkAIKymgJuYpwm8V1qUSRvw",
   FIREBASE_API_KEY: "AIzaSyAwmL55JX1ANGdH-asfM938vmaKWCA4CMM",
   FIREBASE_AUTH_DOMAIN: "veekend-app.firebaseapp.com",
   FIREBASE_PROJECT_ID: "veekend-app",
