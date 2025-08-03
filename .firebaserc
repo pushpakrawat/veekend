@@ -1,6 +1,18 @@
 {
   "projects": {
-    "default": "veekend-app",
-    "dev": "veekend-dev"
-  }
+    "default": "veekend-app"
+  },
+  "targets": {
+    "veekend-app": {
+      "hosting": {
+        "live": [
+          "veekend-app"
+        ],
+        "dev": [
+          "veekend-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
