@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veekend - Discover Amazing Venues Near You</title>
+    <meta name="description" content="Find the best venues, restaurants, and entertainment spots near you with real-time data from Google Places.">
+    <meta name="keywords" content="venues, restaurants, entertainment, places, nearby, discovery">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://veekend.app">
+    <meta property="og:title" content="Veekend - Discover Amazing Venues Near You">
+    <meta property="og:description" content="Find the best venues, restaurants, and entertainment spots near you with real-time data from Google Places.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://veekend.app">
+    <meta property="twitter:title" content="Veekend - Discover Amazing Venues Near You">
+    <meta property="twitter:description" content="Find the best venues, restaurants, and entertainment spots near you with real-time data from Google Places.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                fontFamily: {
+                    'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                },
+                colors: {
+                    primary: {
+                        50: '#EEF2FF',
+                        100: '#E0E7FF', 
+                        500: '#6366F1',
+                        600: '#4F46E5',
+                        700: '#4338CA',
+                    },
+                    dark: {
+                        50: '#1A1A2E',
+                        100: '#16213E',
+                        200: '#0F0F23',
+                        300: '#0E4B99',
+                    }
+                },
+                animation: {
+                    'fade-in': 'fadeIn 0.5s ease-in-out',
+                    'slide-up': 'slideUp 0.3s ease-out',
+                    'pulse-soft': 'pulseSoft 2s infinite',
+                },
+                keyframes: {
+                    fadeIn: {
+                        '0%': { opacity: '0' },
+                        '100%': { opacity: '1' },
+                    },
+                    slideUp: {
+                        '0%': { transform: 'translateY(10px)', opacity: '0' },
+                        '100%': { transform: 'translateY(0)', opacity: '1' },
+                    },
+                    pulseSoft: {
+                        '0%, 100%': { opacity: '1' },
+                        '50%': { opacity: '0.7' },
+                    }
+                }
+            }
+        }
+    };
+    </script>
+</head>
+<body class="bg-dark-200 text-gray-200 font-sans min-h-screen">
+
+    <!-- @COMPONENT: Header [navigation, search, auth] -->
+    <header class="bg-dark-50 border-b border-gray-700 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-white">Veekend</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <!-- @COMPONENT: LocationSearch [autocomplete, geolocation] -->
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" 
+                               placeholder="Search by city, state, country..." 
+                               class="w-full pl-10 pr-12 py-2 bg-dark-100 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                               data-mock="true"
+                               data-implementation="Google Places Autocomplete integration">
+                        <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary-400 transition-colors"
+                                data-event="click:shareLocation"
+                                data-implementation="Browser geolocation API">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                    </div>
+                    <!-- @END_COMPONENT: LocationSearch -->
+                </div>
+
+                <!-- Auth Section -->
+                <!-- @COMPONENT: AuthButton [sign in/out, user menu] -->
+                <div class="flex items-center space-x-4">
+                    <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                            data-event="click:handleAuth"
+                            data-implementation="Firebase Google Sign-In">
+                        <i class="fab fa-google mr-2"></i>
+                        Sign In
+                    </button>
+                </div>
+                <!-- @END_COMPONENT: AuthButton -->
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- @COMPONENT: FilterPanel [categories, distance, rating, price] -->
+        <div class="mb-8">
+            <div class="bg-dark-50 rounded-xl p-6 border border-gray-700">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
+                    
+                    <!-- Categories -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Categories</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="px-3 py-1 bg-primary-500 text-white rounded-full text-sm font-medium hover:bg-primary-600 transition-colors"
+                                    data-filter="dining" data-mock="true">
+                                <i class="fas fa-utensils mr-1"></i>Dining
+                            </button>
+                            <button class="px-3 py-1 bg-dark-100 text-gray-300 rounded-full text-sm font-medium hover:bg-gray-600 transition-colors"
+                                    data-filter="entertainment" data-mock="true">
+                                <i class="fas fa-film mr-1"></i>Entertainment
+                            </button>
+                            <button class="px-3 py-1 bg-dark-100 text-gray-300 rounded-full text-sm font-medium hover:bg-gray-600 transition-colors"
+                                    data-filter="sports" data-mock="true">
+                                <i class="fas fa-dumbbell mr-1"></i>Sports
+                            </button>
+                            <button class="px-3 py-1 bg-dark-100 text-gray-300 rounded-full text-sm font-medium hover:bg-gray-600 transition-colors"
+                                    data-filter="adventure" data-mock="true">
+                                <i class="fas fa-mountain mr-1"></i>Adventure
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Distance Slider -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Distance: <span class="text-primary-400" data-bind="distanceValue">5 km</span></label>
+                        <input type="range" min="1" max="20" value="5" 
+                               class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+                               data-implementation="Update distance filter dynamically">
+                    </div>
+
+                    <!-- Rating Filter -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Min Rating</label>
+                        <div class="flex space-x-1">
+                            <button class="text-yellow-400 hover:text-yellow-300 transition-colors" data-rating="1" data-mock="true">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="text-yellow-400 hover:text-yellow-300 transition-colors" data-rating="2" data-mock="true">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="text-yellow-400 hover:text-yellow-300 transition-colors" data-rating="3" data-mock="true">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="text-yellow-400 hover:text-yellow-300 transition-colors" data-rating="4" data-mock="true">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="text-gray-500 hover:text-yellow-300 transition-colors" data-rating="5" data-mock="true">
+                                <i class="fas fa-star"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Price Level -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Price Level</label>
+                        <div class="flex space-x-1">
+                            <button class="px-2 py-1 bg-primary-500 text-white rounded text-sm font-medium hover:bg-primary-600 transition-colors" data-price="1" data-mock="true">$</button>
+                            <button class="px-2 py-1 bg-dark-100 text-gray-300 rounded text-sm font-medium hover:bg-gray-600 transition-colors" data-price="2" data-mock="true">$$</button>
+                            <button class="px-2 py-1 bg-dark-100 text-gray-300 rounded text-sm font-medium hover:bg-gray-600 transition-colors" data-price="3" data-mock="true">$$$</button>
+                            <button class="px-2 py-1 bg-dark-100 text-gray-300 rounded text-sm font-medium hover:bg-gray-600 transition-colors" data-price="4" data-mock="true">$$$$</button>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    <div>
+                        <button class="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                data-event="click:clearFilters"
+                                data-implementation="Reset all filter states">
+                            <i class="fas fa-times mr-1"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: FilterPanel -->
+
+        <!-- Results Header -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Nearby Venues</h2>
+                <p class="text-gray-400 mt-1" data-bind="resultsInfo">Found 245 venues in Gurgaon, Haryana</p>
+            </div>
+            <div class="flex items-center space-x-2 text-sm text-gray-400">
+                <span>Sort by:</span>
+                <select class="bg-dark-100 border border-gray-600 rounded px-3 py-1 text-gray-200 focus:ring-2 focus:ring-primary-500">
+                    <option>Distance</option>
+                    <option>Rating</option>
+                    <option>Price</option>
+                    <option>Popularity</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- @COMPONENT: VenueGrid [responsive cards, loading states] -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
+            <!-- @MAP: venues.map(venue => ( -->
+            
+            <!-- Venue Card 1 -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer animate-slide-up"
+                 data-venue-id="venue1" data-mock="true"
+                 data-event="click:openVenueDetails">
+                <!-- A modern rooftop restaurant with city skyline views and ambient lighting -->
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
+                     alt="Rooftop restaurant with city views" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-white text-lg" data-bind="venue.name">Sky Lounge</h3>
+                        <button class="text-gray-400 hover:text-red-400 transition-colors"
+                                data-event="click:toggleWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-2" data-bind="venue.address">Cyber Hub, Sector 24</p>
+                    <div class="flex items-center space-x-4 text-sm mb-3">
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fas fa-star text-xs mr-1"></i>
+                            <span data-bind="venue.rating">4.6</span>
+                            <span class="text-gray-500 ml-1" data-bind="venue.reviewCount">(324)</span>
+                        </div>
+                        <div class="text-gray-400" data-bind="venue.distance">1.2 km</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-gray-400 text-sm" data-bind="venue.priceLevel">$$</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm" data-bind="venue.category">Restaurant</span>
+                        </div>
+                        <div class="text-green-400 text-sm font-medium" data-bind="venue.status">Open Now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Card 2 -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer animate-slide-up"
+                 data-venue-id="venue2" data-mock="true"
+                 data-event="click:openVenueDetails">
+                <!-- A trendy coffee shop with modern interior design and cozy seating -->
+                <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
+                     alt="Modern coffee shop interior" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-white text-lg" data-bind="venue.name">Brew & Beans</h3>
+                        <button class="text-red-400 hover:text-red-300 transition-colors"
+                                data-event="click:toggleWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-2" data-bind="venue.address">MG Road, Sector 28</p>
+                    <div class="flex items-center space-x-4 text-sm mb-3">
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fas fa-star text-xs mr-1"></i>
+                            <span data-bind="venue.rating">4.4</span>
+                            <span class="text-gray-500 ml-1" data-bind="venue.reviewCount">(189)</span>
+                        </div>
+                        <div class="text-gray-400" data-bind="venue.distance">0.8 km</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-gray-400 text-sm" data-bind="venue.priceLevel">$</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm" data-bind="venue.category">Cafe</span>
+                        </div>
+                        <div class="text-yellow-400 text-sm font-medium" data-bind="venue.status">Closes 10 PM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Card 3 -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer animate-slide-up"
+                 data-venue-id="venue3" data-mock="true"
+                 data-event="click:openVenueDetails">
+                <!-- A luxury spa with serene ambiance and modern wellness facilities -->
+                <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
+                     alt="Luxury spa with serene ambiance" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-white text-lg" data-bind="venue.name">Zen Wellness Spa</h3>
+                        <button class="text-gray-400 hover:text-red-400 transition-colors"
+                                data-event="click:toggleWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-2" data-bind="venue.address">DLF Phase 2, Golf Course Rd</p>
+                    <div class="flex items-center space-x-4 text-sm mb-3">
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fas fa-star text-xs mr-1"></i>
+                            <span data-bind="venue.rating">4.8</span>
+                            <span class="text-gray-500 ml-1" data-bind="venue.reviewCount">(97)</span>
+                        </div>
+                        <div class="text-gray-400" data-bind="venue.distance">2.1 km</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-gray-400 text-sm" data-bind="venue.priceLevel">$$$</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm" data-bind="venue.category">Spa</span>
+                        </div>
+                        <div class="text-green-400 text-sm font-medium" data-bind="venue.status">Open Now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Card 4 -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer animate-slide-up"
+                 data-venue-id="venue4" data-mock="true"
+                 data-event="click:openVenueDetails">
+                <!-- A modern cinema complex with comfortable seating and latest technology -->
+                <img src="https://pixabay.com/get/g90c517664818cc7d2f4a85df7cb61999b9bd85a72e740362ef3a1762da3f2ad6f778f6d650f5000911d42842c12f08d2683d29bcb3a287faa2638e4439867a4a_1280.jpg" 
+                     alt="Modern cinema complex interior" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-white text-lg" data-bind="venue.name">PVR Cinemas</h3>
+                        <button class="text-gray-400 hover:text-red-400 transition-colors"
+                                data-event="click:toggleWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-2" data-bind="venue.address">Ambience Mall, Vasant Kunj</p>
+                    <div class="flex items-center space-x-4 text-sm mb-3">
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fas fa-star text-xs mr-1"></i>
+                            <span data-bind="venue.rating">4.2</span>
+                            <span class="text-gray-500 ml-1" data-bind="venue.reviewCount">(1,254)</span>
+                        </div>
+                        <div class="text-gray-400" data-bind="venue.distance">3.5 km</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-gray-400 text-sm" data-bind="venue.priceLevel">$$</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm" data-bind="venue.category">Cinema</span>
+                        </div>
+                        <div class="text-green-400 text-sm font-medium" data-bind="venue.status">Open Now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Card 5 -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105 cursor-pointer animate-slide-up"
+                 data-venue-id="venue5" data-mock="true"
+                 data-event="click:openVenueDetails">
+                <!-- A vibrant bowling alley with neon lighting and modern lanes -->
+                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" 
+                     alt="Modern bowling alley with neon lighting" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-semibold text-white text-lg" data-bind="venue.name">Strike Zone</h3>
+                        <button class="text-gray-400 hover:text-red-400 transition-colors"
+                                data-event="click:toggleWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-2" data-bind="venue.address">City Centre Mall, Sector 12</p>
+                    <div class="flex items-center space-x-4 text-sm mb-3">
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fas fa-star text-xs mr-1"></i>
+                            <span data-bind="venue.rating">4.3</span>
+                            <span class="text-gray-500 ml-1" data-bind="venue.reviewCount">(442)</span>
+                        </div>
+                        <div class="text-gray-400" data-bind="venue.distance">1.7 km</div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-gray-400 text-sm" data-bind="venue.priceLevel">$$</span>
+                            <span class="text-gray-500">•</span>
+                            <span class="text-gray-400 text-sm" data-bind="venue.category">Entertainment</span>
+                        </div>
+                        <div class="text-green-400 text-sm font-medium" data-bind="venue.status">Open Now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Skeleton Cards (shown during API calls) -->
+            <!-- @STATE: isLoading:boolean = false -->
+            <div class="bg-dark-50 rounded-xl overflow-hidden border border-gray-700 animate-pulse hidden" data-loading-skeleton="true">
+                <div class="w-full h-48 bg-gray-600"></div>
+                <div class="p-4 space-y-3">
+                    <div class="h-4 bg-gray-600 rounded w-3/4"></div>
+                    <div class="h-3 bg-gray-600 rounded w-1/2"></div>
+                    <div class="flex space-x-4">
+                        <div class="h-3 bg-gray-600 rounded w-16"></div>
+                        <div class="h-3 bg-gray-600 rounded w-12"></div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="h-3 bg-gray-600 rounded w-20"></div>
+                        <div class="h-3 bg-gray-600 rounded w-16"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- @END_MAP )) -->
+        </div>
+        <!-- @END_COMPONENT: VenueGrid -->
+
+        <!-- @COMPONENT: Pagination [page navigation, results info] -->
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-400">
+                Showing <span class="font-medium text-white" data-bind="pagination.start">1</span> to 
+                <span class="font-medium text-white" data-bind="pagination.end">20</span> of 
+                <span class="font-medium text-white" data-bind="pagination.total">245</span> results
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <button class="px-3 py-2 text-sm font-medium text-gray-400 bg-dark-50 border border-gray-600 rounded-lg hover:bg-gray-700 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        data-event="click:previousPage"
+                        disabled data-mock="true">
+                    <i class="fas fa-chevron-left mr-1"></i>Previous
+                </button>
+                
+                <div class="flex items-center space-x-1">
+                    <button class="px-3 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg" data-page="1" data-mock="true">1</button>
+                    <button class="px-3 py-2 text-sm font-medium text-gray-400 bg-dark-50 border border-gray-600 rounded-lg hover:bg-gray-700 hover:text-white transition-colors" data-page="2" data-mock="true">2</button>
+                    <button class="px-3 py-2 text-sm font-medium text-gray-400 bg-dark-50 border border-gray-600 rounded-lg hover:bg-gray-700 hover:text-white transition-colors" data-page="3" data-mock="true">3</button>
+                    <span class="px-2 text-gray-500">...</span>
+                    <button class="px-3 py-2 text-sm font-medium text-gray-400 bg-dark-50 border border-gray-600 rounded-lg hover:bg-gray-700 hover:text-white transition-colors" data-page="13" data-mock="true">13</button>
+                </div>
+                
+                <button class="px-3 py-2 text-sm font-medium text-gray-400 bg-dark-50 border border-gray-600 rounded-lg hover:bg-gray-700 hover:text-white transition-colors"
+                        data-event="click:nextPage" data-mock="true">
+                    Next<i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: Pagination -->
+
+    </main>
+
+    <!-- @COMPONENT: VenueDetailModal [full venue information, photos, reviews] -->
+    <div id="venue-detail-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4"
+         data-implementation="Show/hide based on selected venue">
+        <div class="bg-dark-50 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="relative">
+                <!-- Close Button -->
+                <button class="absolute top-4 right-4 z-10 w-10 h-10 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-70 transition-colors"
+                        data-event="click:closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- Venue Image Gallery -->
+                <!-- A luxury restaurant interior with elegant dining setup and warm lighting -->
+                <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" 
+                     alt="Luxury restaurant interior" 
+                     class="w-full h-64 md:h-80 object-cover rounded-t-xl">
+                
+                <!-- Venue Details -->
+                <div class="p-6">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-2" data-bind="selectedVenue.name">Sky Lounge</h2>
+                            <div class="flex items-center space-x-4 text-sm">
+                                <div class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star mr-1"></i>
+                                    <span data-bind="selectedVenue.rating">4.6</span>
+                                    <span class="text-gray-400 ml-1" data-bind="selectedVenue.reviewCount">(324 reviews)</span>
+                                </div>
+                                <div class="text-gray-400" data-bind="selectedVenue.priceLevel">$$ • Restaurant</div>
+                                <div class="text-green-400 font-medium" data-bind="selectedVenue.status">Open Now</div>
+                            </div>
+                        </div>
+                        <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                                data-event="click:addToWishlist"
+                                data-implementation="Requires authentication">
+                            <i class="far fa-heart mr-2"></i>Save
+                        </button>
+                    </div>
+
+                    <!-- Contact & Location Info -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-3">Contact & Location</h3>
+                            <div class="space-y-2 text-gray-300">
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt w-5 text-gray-400 mr-3"></i>
+                                    <span data-bind="selectedVenue.fullAddress">Cyber Hub, Sector 24, DLF Cyber City, Gurgaon, Haryana 122002</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone w-5 text-gray-400 mr-3"></i>
+                                    <span data-bind="selectedVenue.phone">+91 9876543210</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-globe w-5 text-gray-400 mr-3"></i>
+                                    <a href="#" class="text-primary-400 hover:text-primary-300" data-bind="selectedVenue.website">www.skylounge.com</a>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-route w-5 text-gray-400 mr-3"></i>
+                                    <span data-bind="selectedVenue.distance">1.2 km from your location</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-3">Opening Hours</h3>
+                            <div class="space-y-1 text-gray-300 text-sm" data-bind="selectedVenue.openingHours">
+                                <div class="flex justify-between">
+                                    <span>Monday</span>
+                                    <span>11:00 AM - 11:00 PM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Tuesday</span>
+                                    <span>11:00 AM - 11:00 PM</span>
+                                </div>
+                                <div class="flex justify-between font-medium text-white">
+                                    <span>Wednesday (Today)</span>
+                                    <span>11:00 AM - 11:00 PM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Thursday</span>
+                                    <span>11:00 AM - 11:00 PM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Friday</span>
+                                    <span>11:00 AM - 12:00 AM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Saturday</span>
+                                    <span>11:00 AM - 12:00 AM</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Sunday</span>
+                                    <span>11:00 AM - 11:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Reviews -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-4">Recent Reviews</h3>
+                        <div class="space-y-4" data-bind="selectedVenue.reviews">
+                            <!-- Review 1 -->
+                            <div class="bg-dark-100 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                            A
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-white">Amit Kumar</p>
+                                            <p class="text-xs text-gray-400">2 days ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-sm">Amazing rooftop experience with great city views. The food was excellent and service was prompt. Highly recommend for evening dining!</p>
+                            </div>
+
+                            <!-- Review 2 -->
+                            <div class="bg-dark-100 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                            P
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-white">Priya Sharma</p>
+                                            <p class="text-xs text-gray-400">1 week ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="far fa-star text-xs"></i>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-sm">Great ambiance and food quality. The prices are a bit high but worth it for special occasions. Booking in advance is recommended.</p>
+                            </div>
+                        </div>
+
+                        <button class="mt-4 text-primary-400 hover:text-primary-300 text-sm font-medium"
+                                data-implementation="Load more reviews from Google Places API">
+                            View All Reviews <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: VenueDetailModal -->
+
+    <!-- @COMPONENT: LoadingOverlay [full screen loading during searches] -->
+    <div id="loading-overlay" class="fixed inset-0 bg-dark-200 bg-opacity-90 z-40 hidden items-center justify-center"
+         data-implementation="Show during API calls">
+        <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mb-4"></div>
+            <p class="text-gray-300 font-medium">Finding amazing venues near you...</p>
+            <p class="text-gray-400 text-sm mt-2">Getting real-time data from Google Places</p>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: LoadingOverlay -->
+
+    <!-- @COMPONENT: ErrorToast [API errors, connection issues] -->
+    <div id="error-toast" class="fixed bottom-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden animate-slide-up"
+         data-implementation="Show/hide for error states">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <p class="font-medium">Unable to fetch venues</p>
+                <p class="text-sm opacity-90">Please check your connection and try again.</p>
+            </div>
+            <button class="ml-4 text-white hover:text-gray-200" data-event="click:dismissError">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: ErrorToast -->
+
+    <!-- Footer -->
+    <footer class="bg-dark-50 border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Veekend</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Discover amazing venues near you with real-time data from Google Places. Your weekend adventures start here.</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>Real-time venue discovery</li>
+                        <li>Advanced filtering options</li>
+                        <li>Location-based search</li>
+                        <li>Wishlist management</li>
+                        <li>Detailed venue information</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">About</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>Privacy Policy</li>
+                        <li>Terms of Service</li>
+                        <li>Contact Us</li>
+                        <li>API Attribution</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between">
+                <p class="text-gray-400 text-sm">© 2024 Veekend. All rights reserved.</p>
+                <p class="text-gray-400 text-sm mt-2 sm:mt-0">Powered by Google Places API</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // TODO: Implement business logic, API calls, and state management
+    (function() {
+        'use strict';
+        
+        // Mock JavaScript for UI interactions (no actual functionality)
+        // Real implementation would use React, Zustand, and Google Places API
+        
+        // Simulate filter interactions
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('[data-filter]')) {
+                // Toggle filter button appearance
+                e.target.classList.toggle('bg-primary-500');
+                e.target.classList.toggle('text-white');
+                e.target.classList.toggle('bg-dark-100');
+                e.target.classList.toggle('text-gray-300');
+                
+                // TODO: Trigger real-time Google Places API search with filters
+                console.log('Filter changed:', e.target.dataset.filter);
+            }
+            
+            if (e.target.matches('[data-venue-id]') || e.target.closest('[data-venue-id]')) {
+                // Show venue detail modal
+                document.getElementById('venue-detail-modal').classList.remove('hidden');
+                document.getElementById('venue-detail-modal').classList.add('flex');
+                
+                // TODO: Fetch detailed venue information from Google Places API
+                console.log('Opening venue details');
+            }
+            
+            if (e.target.matches('[data-event="click:closeModal"]')) {
+                // Hide venue detail modal
+                document.getElementById('venue-detail-modal').classList.add('hidden');
+                document.getElementById('venue-detail-modal').classList.remove('flex');
+            }
+            
+            if (e.target.matches('[data-event="click:shareLocation"]')) {
+                // TODO: Implement browser geolocation API
+                console.log('Requesting user location');
+            }
+            
+            if (e.target.matches('[data-event="click:handleAuth"]')) {
+                // TODO: Implement Firebase Google Sign-In
+                console.log('Initiating Google Sign-In');
+            }
+        });
+        
+        // Simulate loading states
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            document.getElementById('loading-overlay').classList.add('flex');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+            document.getElementById('loading-overlay').classList.remove('flex');
+        }
+        
+        // Simulate error handling
+        function showError(message) {
+            const toast = document.getElementById('error-toast');
+            toast.classList.remove('hidden');
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Range slider for distance filter
+        const distanceSlider = document.querySelector('input[type="range"]');
+        if (distanceSlider) {
+            distanceSlider.addEventListener('input', function(e) {
+                const value = e.target.value;
+                const display = document.querySelector('[data-bind="distanceValue"]');
+                if (display) {
+                    display.textContent = value + ' km';
+                }
+                // TODO: Update distance filter and trigger new search
+                console.log('Distance filter changed:', value);
+            });
+        }
+        
+        // Rating filter
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('[data-rating]')) {
+                const rating = parseInt(e.target.dataset.rating);
+                const stars = e.target.parentElement.querySelectorAll('[data-rating]');
+                
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.remove('text-gray-500');
+                        star.classList.add('text-yellow-400');
+                    } else {
+                        star.classList.remove('text-yellow-400');
+                        star.classList.add('text-gray-500');
+                    }
+                });
+                
+                // TODO: Update rating filter and trigger new search
+                console.log('Rating filter changed:', rating);
+            }
+        });
+        
+        console.log('Veekend UI initialized - Ready for React integration');
+    })();
+    </script>
+
+    <style>
+    /* Custom styles for dark theme slider */
+    .slider::-webkit-slider-thumb {
+        appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #6366F1;
+        cursor: pointer;
+        border: 2px solid #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .slider::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #6366F1;
+        cursor: pointer;
+        border: 2px solid #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Ensure good contrast for accessibility */
+    .text-gray-200 { color: #E5E7EB; }
+    .text-gray-300 { color: #D1D5DB; }
+    .text-gray-400 { color: #9CA3AF; }
+    
+    /* Custom scrollbar for dark theme */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1A1A2E;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #6366F1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #4F46E5;
+    }
+    </style>
+
+</body>
+</html>
