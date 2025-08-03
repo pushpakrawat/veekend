@@ -1,7 +1,6 @@
 {
   "projects": {
     "default": "veekend-app",
-    "live": "veekend-app",
     "dev": "veekend-dev"
   }
 }
