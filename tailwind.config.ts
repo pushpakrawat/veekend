@@ -12,54 +12,54 @@ export default {
       },
       colors: {
         background: "#000000",       // Pure black background
-        foreground: "#e0e7ff",       // Soft light blue text for contrast
+        foreground: "#d1d5db",       // Soft light gray text for readability
         card: {
-          DEFAULT: "#1e293b",        // Dark slate blue for cards
-          foreground: "#cbd5e1",     // Light slate text
+          DEFAULT: "#1e293b",        // Dark slate blue for card backgrounds
+          foreground: "#e0e7ff",     // Light blue text on cards
         },
         popover: {
-          DEFAULT: "#334155",        // Medium dark blue for popovers
+          DEFAULT: "#273449",        // Dark bluish shade for popovers
           foreground: "#cbd5e1",
         },
         primary: {
-          DEFAULT: "#3b82f6",        // Vivid sky blue primary color
+          DEFAULT: "#2563eb",        // Strong royal blue for primary buttons/highlights
           foreground: "#ffffff",     // White text on primary
         },
         secondary: {
-          DEFAULT: "#2563eb",        // Stronger blue for secondary accents
-          foreground: "#dbeafe",
+          DEFAULT: "#1e40af",        // Darker indigo blue for secondary accents
+          foreground: "#dbeafe",     // Pale blue text
         },
         muted: {
-          DEFAULT: "#475569",        // Muted steel blue for disabled/text-muted
+          DEFAULT: "#475569",        // Muted blue-gray for disabled text, placeholders
           foreground: "#94a3b8",
         },
         accent: {
-          DEFAULT: "#60a5fa",        // Soft accent blue
-          foreground: "#1e40af",
+          DEFAULT: "#3b82f6",        // Medium bright blue accent for links, highlights
+          foreground: "#1e3a8a",
         },
         destructive: {
           DEFAULT: "#ef4444",        // Red for destructive actions
           foreground: "#ffffff",
         },
-        border: "#334155",           // Dark border matching popover
-        input: "#1e293b",            // Same as card background for inputs
-        ring: "#3b82f6",             // Blue ring focus color
+        border: "#334155",           // Border color matching card/popover edges
+        input: "#1e293b",            // Input background same as card color for blending
+        ring: "#2563eb",             // Blue focus ring for accessibility
         chart: {
-          "1": "#3b82f6",
-          "2": "#2563eb",
-          "3": "#60a5fa",
+          "1": "#2563eb",
+          "2": "#1e40af",
+          "3": "#3b82f6",
           "4": "#475569",
           "5": "#1e293b",
         },
         sidebar: {
-          DEFAULT: "#1e293b",
-          foreground: "#e0e7ff",
-          primary: "#3b82f6",
+          DEFAULT: "#1e293b",        // Sidebar background consistent with cards
+          foreground: "#d1d5db",
+          primary: "#2563eb",
           "primary-foreground": "#ffffff",
-          accent: "#60a5fa",
-          "accent-foreground": "#1e40af",
+          accent: "#3b82f6",
+          "accent-foreground": "#1e3a8a",
           border: "#334155",
-          ring: "#3b82f6",
+          ring: "#2563eb",
         },
       },
       keyframes: {
