@@ -11,14 +11,14 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "#191970", // Midnight Blue
+        background: "#000000ff", // Midnight Blue
         foreground: "#ffffff",
         card: {
-          DEFAULT: "#262673", // Slightly lighter midnight blue
+          DEFAULT: "#000000ff", // Slightly lighter midnight blue
           foreground: "#ffffff",
         },
         popover: {
-          DEFAULT: "#262673",
+          DEFAULT: "#000000ff",
           foreground: "#ffffff",
         },
         primary: {
@@ -30,7 +30,7 @@ export default {
           foreground: "#ffffff",
         },
         muted: {
-          DEFAULT: "#403d52",
+          DEFAULT: "#000000ff",
           foreground: "#d1d1d1",
         },
         accent: {
@@ -41,7 +41,7 @@ export default {
           DEFAULT: "#ff4c4c",
           foreground: "#ffffff",
         },
-        border: "#2f2f6f",
+        border: "#000000ff",
         input: "#2f2f6f",
         ring: "#800000",
         chart: {
@@ -52,13 +52,13 @@ export default {
           "5": "#191970",
         },
         sidebar: {
-          DEFAULT: "#262673",
+          DEFAULT: "#000000ff",
           foreground: "#ffffff",
           primary: "#800000",
           "primary-foreground": "#ffffff",
           accent: "#b22222",
           "accent-foreground": "#ffffff",
-          border: "#2f2f6f",
+          border: "#000000ff",
           ring: "#800000",
         },
       },
