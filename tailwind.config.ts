@@ -11,70 +11,56 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "#0a1045",         // Very dark blue-black
-        foreground: "#e8f0ff",         // Gentle soft white-blue for text
+        background: "#000000",       // Pure black background
+        foreground: "#ffffff",       // White text
         card: {
-          DEFAULT: "#151a40",          // Slightly lighter blue-black for cards
-          foreground: "#e8f0ff",
-        },
-        popover: {
-          DEFAULT: "#192259",
-          foreground: "#dbeafe",
-        },
-        primary: {
-          DEFAULT: "#09fbd3",          // Bright aqua/cyan for main accents/headings
-          foreground: "#001f3f",       // Deepest blue for text contrast
-        },
-        secondary: {
-          DEFAULT: "#3ec6ff",          // Neon blue for secondary accents (buttons, icons)
-          foreground: "#021f37",
-        },
-        accent: {
-          DEFAULT: "#2ef6ff",          // Electric cyan accent for highlights
-          foreground: "#07213c",
-        },
-        muted: {
-          DEFAULT: "#414868",          // Muted blue-gray for less important UI
-          foreground: "#b6c2e2",
-        },
-        destructive: {
-          DEFAULT: "#ef4444",
+          DEFAULT: "#111111",        // Very dark gray for slight contrast with background
           foreground: "#ffffff",
         },
-        border: "#2b3263",             // Blue-gray border color for sharpness
-        input: "#192259",              // Input backgrounds blend well with popover/cards
-        ring: "#09fbd3",               // Bright cyan for focus outlines
+        popover: {
+          DEFAULT: "#1a1a1a",
+          foreground: "#ffffff",
+        },
+        primary: {
+          DEFAULT: "#ffffff",        // White for primary elements
+          foreground: "#000000",     // Black text on white
+        },
+        secondary: {
+          DEFAULT: "#e5e5e5",        // Light gray for secondary buttons
+          foreground: "#000000",
+        },
+        muted: {
+          DEFAULT: "#333333",        // Mid-gray for muted areas
+          foreground: "#cccccc",
+        },
+        accent: {
+          DEFAULT: "#f5f5f5",        // Almost white for accents
+          foreground: "#000000",
+        },
+        destructive: {
+          DEFAULT: "#ff0000",        // Red for danger
+          foreground: "#ffffff",
+        },
+        border: "#333333",           // Dark border
+        input: "#1a1a1a",            // Input bg
+        ring: "#ffffff",             // White focus ring
         chart: {
-          "1": "#09fbd3",
-          "2": "#3ec6ff",
-          "3": "#2ef6ff",
-          "4": "#414868",
-          "5": "#151a40",
+          "1": "#ffffff",
+          "2": "#cccccc",
+          "3": "#999999",
+          "4": "#666666",
+          "5": "#333333",
         },
         sidebar: {
-          DEFAULT: "#151a40",
-          foreground: "#e8f0ff",
-          primary: "#09fbd3",
-          "primary-foreground": "#001f3f",
-          accent: "#2ef6ff",
-          "accent-foreground": "#07213c",
-          border: "#2b3263",
-          ring: "#09fbd3",
+          DEFAULT: "#111111",
+          foreground: "#ffffff",
+          primary: "#ffffff",
+          "primary-foreground": "#000000",
+          accent: "#f5f5f5",
+          "accent-foreground": "#000000",
+          border: "#333333",
+          ring: "#ffffff",
         },
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
