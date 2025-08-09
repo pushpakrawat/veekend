@@ -11,55 +11,55 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "#000000", // Pure Black Background for total darkness
-        foreground: "#f5f5f5", // Very light gray for readability on black
+        background: "#000000",       // Pure black background
+        foreground: "#e0e7ff",       // Soft light blue text for contrast
         card: {
-          DEFAULT: "#1a1a1a", // Very dark gray card background for subtle contrast
-          foreground: "#e0e0e0", // Soft white text
+          DEFAULT: "#1e293b",        // Dark slate blue for cards
+          foreground: "#cbd5e1",     // Light slate text
         },
         popover: {
-          DEFAULT: "#2c2c2c", // A bit lighter dark shade for popovers
-          foreground: "#e0e0e0",
+          DEFAULT: "#334155",        // Medium dark blue for popovers
+          foreground: "#cbd5e1",
         },
         primary: {
-          DEFAULT: "#800000", // Classic maroon for main accents/buttons
-          foreground: "#ffffff", // White text on maroon
+          DEFAULT: "#3b82f6",        // Vivid sky blue primary color
+          foreground: "#ffffff",     // White text on primary
         },
         secondary: {
-          DEFAULT: "#b03060", // Slightly pinkish maroon for secondary accents
-          foreground: "#fff0f6", // Light pinkish text
+          DEFAULT: "#2563eb",        // Stronger blue for secondary accents
+          foreground: "#dbeafe",
         },
         muted: {
-          DEFAULT: "#4b4b4b", // Medium dark gray for disabled/text-muted
-          foreground: "#999999",
+          DEFAULT: "#475569",        // Muted steel blue for disabled/text-muted
+          foreground: "#94a3b8",
         },
         accent: {
-          DEFAULT: "#aa0033", // Bright cherry red accent to complement maroon
-          foreground: "#ffffff",
+          DEFAULT: "#60a5fa",        // Soft accent blue
+          foreground: "#1e40af",
         },
         destructive: {
-          DEFAULT: "#ff4444", // Strong red for destructive actions
+          DEFAULT: "#ef4444",        // Red for destructive actions
           foreground: "#ffffff",
         },
-        border: "#333333", // Dark border color
-        input: "#222222", // Input backgrounds darker for focus
-        ring: "#800000", // Maroon ring focus outlines
+        border: "#334155",           // Dark border matching popover
+        input: "#1e293b",            // Same as card background for inputs
+        ring: "#3b82f6",             // Blue ring focus color
         chart: {
-          "1": "#800000",
-          "2": "#b03060",
-          "3": "#aa0033",
-          "4": "#4b4b4b",
-          "5": "#222222",
+          "1": "#3b82f6",
+          "2": "#2563eb",
+          "3": "#60a5fa",
+          "4": "#475569",
+          "5": "#1e293b",
         },
         sidebar: {
-          DEFAULT: "#1a1a1a",
-          foreground: "#f5f5f5",
-          primary: "#800000",
+          DEFAULT: "#1e293b",
+          foreground: "#e0e7ff",
+          primary: "#3b82f6",
           "primary-foreground": "#ffffff",
-          accent: "#aa0033",
-          "accent-foreground": "#fff0f6",
-          border: "#333333",
-          ring: "#800000",
+          accent: "#60a5fa",
+          "accent-foreground": "#1e40af",
+          border: "#334155",
+          ring: "#3b82f6",
         },
       },
       keyframes: {
