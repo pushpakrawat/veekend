@@ -11,54 +11,54 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "#000000ff", // Midnight Blue
-        foreground: "#ffffff",
+        background: "#000000", // Pure Black Background for total darkness
+        foreground: "#f5f5f5", // Very light gray for readability on black
         card: {
-          DEFAULT: "#000000ff", // Slightly lighter midnight blue
-          foreground: "#ffffff",
+          DEFAULT: "#1a1a1a", // Very dark gray card background for subtle contrast
+          foreground: "#e0e0e0", // Soft white text
         },
         popover: {
-          DEFAULT: "#000000ff",
-          foreground: "#ffffff",
+          DEFAULT: "#2c2c2c", // A bit lighter dark shade for popovers
+          foreground: "#e0e0e0",
         },
         primary: {
-          DEFAULT: "#800000", // Maroon
-          foreground: "#ffffff",
+          DEFAULT: "#800000", // Classic maroon for main accents/buttons
+          foreground: "#ffffff", // White text on maroon
         },
         secondary: {
-          DEFAULT: "#a52a2a", // Lighter maroon/brown
-          foreground: "#ffffff",
+          DEFAULT: "#b03060", // Slightly pinkish maroon for secondary accents
+          foreground: "#fff0f6", // Light pinkish text
         },
         muted: {
-          DEFAULT: "#000000ff",
-          foreground: "#d1d1d1",
+          DEFAULT: "#4b4b4b", // Medium dark gray for disabled/text-muted
+          foreground: "#999999",
         },
         accent: {
-          DEFAULT: "#b22222", // Firebrick red for accents
+          DEFAULT: "#aa0033", // Bright cherry red accent to complement maroon
           foreground: "#ffffff",
         },
         destructive: {
-          DEFAULT: "#ff4c4c",
+          DEFAULT: "#ff4444", // Strong red for destructive actions
           foreground: "#ffffff",
         },
-        border: "#000000ff",
-        input: "#2f2f6f",
-        ring: "#800000",
+        border: "#333333", // Dark border color
+        input: "#222222", // Input backgrounds darker for focus
+        ring: "#800000", // Maroon ring focus outlines
         chart: {
           "1": "#800000",
-          "2": "#b22222",
-          "3": "#a52a2a",
-          "4": "#262673",
-          "5": "#191970",
+          "2": "#b03060",
+          "3": "#aa0033",
+          "4": "#4b4b4b",
+          "5": "#222222",
         },
         sidebar: {
-          DEFAULT: "#000000ff",
-          foreground: "#ffffff",
+          DEFAULT: "#1a1a1a",
+          foreground: "#f5f5f5",
           primary: "#800000",
           "primary-foreground": "#ffffff",
-          accent: "#b22222",
-          "accent-foreground": "#ffffff",
-          border: "#000000ff",
+          accent: "#aa0033",
+          "accent-foreground": "#fff0f6",
+          border: "#333333",
           ring: "#800000",
         },
       },
