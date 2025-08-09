@@ -11,73 +11,65 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "#191970", // Midnight Blue
+        foreground: "#ffffff",
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: "#262673", // Slightly lighter midnight blue
+          foreground: "#ffffff",
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: "#262673",
+          foreground: "#ffffff",
         },
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "#800000", // Maroon
+          foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
+          DEFAULT: "#a52a2a", // Lighter maroon/brown
+          foreground: "#ffffff",
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "#403d52",
+          foreground: "#d1d1d1",
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: "#b22222", // Firebrick red for accents
+          foreground: "#ffffff",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: "#ff4c4c",
+          foreground: "#ffffff",
         },
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
+        border: "#2f2f6f",
+        input: "#2f2f6f",
+        ring: "#800000",
         chart: {
-          "1": "var(--chart-1)",
-          "2": "var(--chart-2)",
-          "3": "var(--chart-3)",
-          "4": "var(--chart-4)",
-          "5": "var(--chart-5)",
+          "1": "#800000",
+          "2": "#b22222",
+          "3": "#a52a2a",
+          "4": "#262673",
+          "5": "#191970",
         },
         sidebar: {
-          DEFAULT: "var(--sidebar-background)",
-          foreground: "var(--sidebar-foreground)",
-          primary: "var(--sidebar-primary)",
-          "primary-foreground": "var(--sidebar-primary-foreground)",
-          accent: "var(--sidebar-accent)",
-          "accent-foreground": "var(--sidebar-accent-foreground)",
-          border: "var(--sidebar-border)",
-          ring: "var(--sidebar-ring)",
+          DEFAULT: "#262673",
+          foreground: "#ffffff",
+          primary: "#800000",
+          "primary-foreground": "#ffffff",
+          accent: "#b22222",
+          "accent-foreground": "#ffffff",
+          border: "#2f2f6f",
+          ring: "#800000",
         },
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
