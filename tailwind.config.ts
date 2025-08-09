@@ -11,55 +11,55 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        background: "#000000",       // Pure black background
-        foreground: "#d1d5db",       // Soft light gray text for readability
+        background: "#0a1045",         // Very dark blue-black
+        foreground: "#e8f0ff",         // Gentle soft white-blue for text
         card: {
-          DEFAULT: "#1e293b",        // Dark slate blue for card backgrounds
-          foreground: "#e0e7ff",     // Light blue text on cards
+          DEFAULT: "#151a40",          // Slightly lighter blue-black for cards
+          foreground: "#e8f0ff",
         },
         popover: {
-          DEFAULT: "#273449",        // Dark bluish shade for popovers
-          foreground: "#cbd5e1",
+          DEFAULT: "#192259",
+          foreground: "#dbeafe",
         },
         primary: {
-          DEFAULT: "#2563eb",        // Strong royal blue for primary buttons/highlights
-          foreground: "#ffffff",     // White text on primary
+          DEFAULT: "#09fbd3",          // Bright aqua/cyan for main accents/headings
+          foreground: "#001f3f",       // Deepest blue for text contrast
         },
         secondary: {
-          DEFAULT: "#1e40af",        // Darker indigo blue for secondary accents
-          foreground: "#dbeafe",     // Pale blue text
-        },
-        muted: {
-          DEFAULT: "#475569",        // Muted blue-gray for disabled text, placeholders
-          foreground: "#94a3b8",
+          DEFAULT: "#3ec6ff",          // Neon blue for secondary accents (buttons, icons)
+          foreground: "#021f37",
         },
         accent: {
-          DEFAULT: "#3b82f6",        // Medium bright blue accent for links, highlights
-          foreground: "#1e3a8a",
+          DEFAULT: "#2ef6ff",          // Electric cyan accent for highlights
+          foreground: "#07213c",
+        },
+        muted: {
+          DEFAULT: "#414868",          // Muted blue-gray for less important UI
+          foreground: "#b6c2e2",
         },
         destructive: {
-          DEFAULT: "#ef4444",        // Red for destructive actions
+          DEFAULT: "#ef4444",
           foreground: "#ffffff",
         },
-        border: "#334155",           // Border color matching card/popover edges
-        input: "#1e293b",            // Input background same as card color for blending
-        ring: "#2563eb",             // Blue focus ring for accessibility
+        border: "#2b3263",             // Blue-gray border color for sharpness
+        input: "#192259",              // Input backgrounds blend well with popover/cards
+        ring: "#09fbd3",               // Bright cyan for focus outlines
         chart: {
-          "1": "#2563eb",
-          "2": "#1e40af",
-          "3": "#3b82f6",
-          "4": "#475569",
-          "5": "#1e293b",
+          "1": "#09fbd3",
+          "2": "#3ec6ff",
+          "3": "#2ef6ff",
+          "4": "#414868",
+          "5": "#151a40",
         },
         sidebar: {
-          DEFAULT: "#1e293b",        // Sidebar background consistent with cards
-          foreground: "#d1d5db",
-          primary: "#2563eb",
-          "primary-foreground": "#ffffff",
-          accent: "#3b82f6",
-          "accent-foreground": "#1e3a8a",
-          border: "#334155",
-          ring: "#2563eb",
+          DEFAULT: "#151a40",
+          foreground: "#e8f0ff",
+          primary: "#09fbd3",
+          "primary-foreground": "#001f3f",
+          accent: "#2ef6ff",
+          "accent-foreground": "#07213c",
+          border: "#2b3263",
+          ring: "#09fbd3",
         },
       },
       keyframes: {
